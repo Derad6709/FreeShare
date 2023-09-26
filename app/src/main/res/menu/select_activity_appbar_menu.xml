@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/send"
+        android:icon="@drawable/ic_baseline_send_24"
+        app:showAsAction="ifRoom"
+        android:title=""/>
+
+    <item android:id="@+id/sort_by"
+          android:title="@string/sort_by">
+
+        <menu>
+            <group
+                android:id="@+id/sort_by_group"
+                android:checkableBehavior="single">
+
+              <item android:id="@+id/sort_by_new"
+                    android:title="@string/newest"/>
+
+                <item android:id="@+id/sort_by_old"
+                      android:title="@string/oldest"/>
+
+                <item android:id="@+id/sort_by_az"
+                    android:title="@string/a_to_z"/>
+
+                <item android:id="@+id/sort_by_za"
+                    android:title="@string/z_to_a"/>
+
+                <item android:id="@+id/sort_by_large"
+                    android:title="@string/largest"/>
+
+                <item android:id="@+id/sort_by_small"
+                    android:title="@string/smallest"/>
+            </group>
+        </menu>
+    </item>
+
+    <item android:id="@+id/layout_type"
+          android:title="@string/grid_view"
+          android:checkable="true"/>
+
+</menu>

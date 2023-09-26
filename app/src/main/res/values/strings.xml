@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">FreeShare</string>
+
+    <string name="send">Send</string>
+    <string name="receive">Receive</string>
+
+    <string name="storage">Storage</string>
+    <string name="location">Location</string>
+
+    <string name="allow_permissions">Allow permissions</string>
+    <string name="allow_permissions_detail">Allow necessary permissions to access and share files on this device</string>
+
+    <string name="allow_storage">Access storage</string>
+    <string name="allow_storage_detail">Storage access is needed for selecting files to be shared</string>
+
+    <string name="allow_location">Access location</string>
+    <string name="allow_location_detail">Location is needed to establish connection with other devices</string>
+
+    <string name="allow">Allow</string>
+    <string name="allowed">Allowed</string>
+
+    <string name="error">Error</string>
+    <string name="storage_access_denied"> access denied</string>
+    <string name="please_try_again">Please try again later</string>
+
+    <string name="select_items">Select items</string>
+
+    <string name="photos">Photos</string>
+    <string name="videos">Videos</string>
+    <string name="songs">Songs</string>
+    <string name="apps">Apps</string>
+    <string name="files">Files</string>
+
+    <string name="sort_by">Sort by</string>
+    <string name="newest">Newest</string>
+    <string name="oldest">Oldest</string>
+    <string name="a_to_z">A to Z</string>
+    <string name="z_to_a">Z to A</string>
+    <string name="largest">Largest</string>
+    <string name="smallest">Smallest</string>
+
+    <string name="grid_view">Grid view</string>
+
+    <string name="find_devices">Find devices</string>
+    <string name="waiting_devices">Waiting device</string>
+
+    <string name="connect">Connect</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="connect_to">Connect to </string>
+
+    <string name="rescan">Rescan</string>
+</resources>
