@@ -1,1 +1,4 @@
-c
+class Session(){
+
+  private lateinit var ServerSocket
+}
