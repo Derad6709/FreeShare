@@ -134,7 +134,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/imageView3"
+                        android:id="@+id/imageView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/eight_dp"
@@ -162,7 +162,7 @@
                         android:orientation="vertical"
                         app:layout_constraintBottom_toTopOf="@+id/activity_permission_btn_allow_location"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/imageView3"
+                        app:layout_constraintStart_toEndOf="@+id/imageView4"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
