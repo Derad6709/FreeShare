@@ -15,6 +15,7 @@ import com.a.freeshare.fragment.BaseFragment
 import com.a.freeshare.impl.CommonSelectionImpl
 import com.a.freeshare.obj.FileItem
 import java.io.File
+import java.lang.StringBuilder
 import java.net.URLConnection
 import kotlin.math.abs
 
@@ -86,7 +87,7 @@ class AppsFragment() : BaseFragment(), CommonSelectionImpl<FileItem> {
 
                     if (app.flags and ApplicationInfo.FLAG_SYSTEM == 0){
 
-                        val name = app.loadLabel(requireActivity().packageManager).toString()
+                        val name = "${app.loadLabel(requireActivity().packageManager)}.apk"
                         val absPath = app.publicSourceDir
                         val apkFile = File(absPath)
                         val dataSize = apkFile.length()

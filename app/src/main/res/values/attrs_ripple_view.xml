@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="RippleView">
+
+        <attr name="rippleColor" format="color" />
+        <attr name="rippleTime" format="integer"/>
+        <attr name="consecutiveDelay" format="integer"/>
+
+    </declare-styleable>
+</resources>

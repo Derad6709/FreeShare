@@ -71,7 +71,10 @@ class SessionActivity : AppCompatActivity() {
                arguments = Bundle().apply {
                    putSerializable(BaseFragment.ITEMS,items)
                }
-           } else FindDeviceFragment()
+           } else {
+               FindDeviceFragment()
+           }
+
             supportFragmentManager.commit { add(R.id.activity_session_container,connectionFragment,BaseFragment.TAG) }
 
         }else{
@@ -79,7 +82,7 @@ class SessionActivity : AppCompatActivity() {
 
         }
 
-        connectionCallbacks = connectionFragment as ConnectionImpl
+        if (connectionFragment is FindDeviceFragment || connectionFragment is HostDeviceFragment)connectionCallbacks = connectionFragment as ConnectionImpl
 
         p2pManager = getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
         channel = p2pManager.initialize(this, Looper.getMainLooper(),connectionCallbacks)

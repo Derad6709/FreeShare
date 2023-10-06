@@ -39,89 +39,11 @@ open class BaseHolder(itemView:View,private val selectableAdapter:SelectableRecy
             //icon.alpha = 1f
         }
 
-        setIconOfFile(a)
+        setIconOfFile(icon,a.absPath,a.mime)
 
         txtTitle.text = a.name
         txtSizeAndDur.text = FileUtil.getFormattedLongData(a.dataSize)
 
     }
 
-  fun setIconOfFile(item:FileItem){
-
-
-                val sourceFile = File(item.absPath)
-
-                if (sourceFile.isDirectory){
-
-                        icon.setImageDrawable(ContextCompat.getDrawable(itemView.context,R.drawable.ic_baseline_folder_24))
-                        icon.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                }else{
-
-                    val mime:String? = item.mime
-
-                    if (mime != null){
-
-                        if (mime.startsWith("image/")){
-
-                            icon.scaleType = ImageView.ScaleType.CENTER_CROP
-                            Glide.with(itemView.context).load(sourceFile).into(icon)
-                        }else if (mime.startsWith("video/")){
-                            icon.scaleType = ImageView.ScaleType.CENTER_CROP
-                            Glide.with(itemView.context).load(sourceFile.absolutePath).into(icon)
-
-
-                        }else if (mime.startsWith("audio/")){
-
-                            val mmr = MediaMetadataRetriever()
-                            mmr.setDataSource(sourceFile.absolutePath)
-                            val byteArray = mmr.embeddedPicture
-                            synchronized(mmr){
-                                mmr.close()
-                            }
-                            if (byteArray!=null){
-                                icon.scaleType = ImageView.ScaleType.CENTER_CROP
-                                Glide.with(itemView.context).load(byteArray).into(icon)
-                            }else{
-                                icon.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                                icon.setImageDrawable(ContextCompat.getDrawable(itemView.context,R.drawable.ic_baseline_music_note_24))
-                            }
-
-                        }else if (mime.contains("vnd")){
-
-                             val pi = itemView.context.applicationContext.packageManager.getPackageArchiveInfo(sourceFile.absolutePath,0)
-                            pi?.applicationInfo?.sourceDir = sourceFile.absolutePath
-                            pi?.applicationInfo?.publicSourceDir = sourceFile.absolutePath
-
-                            Thread{
-
-                                val logo = pi?.applicationInfo?.loadIcon(itemView.context.applicationContext.packageManager)
-
-                                icon.post {
-                                    icon.setImageDrawable(logo)
-                                    icon.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                                }
-                            }.start()
-
-                        }else{
-
-                            icon.setImageDrawable(null)
-                            icon.scaleType = ImageView.ScaleType.FIT_XY
-                        }
-                    }else{
-                        icon.setImageDrawable(null)
-                        icon.scaleType = ImageView.ScaleType.FIT_XY
-
-                    }
-
-                }
-
-    }
-
-    private fun getScaledBitmap(bmp:Bitmap,percent : Float):Bitmap{
-
-        val scaledWidth:Int = (bmp.width.toFloat() * percent).roundToInt()
-        val scaledHeight:Int = (bmp.height.toFloat() * percent).roundToInt()
-
-        return Bitmap.createScaledBitmap(bmp,scaledWidth,scaledHeight,true)
-    }
 }

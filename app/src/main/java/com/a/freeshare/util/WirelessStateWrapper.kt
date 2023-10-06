@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothManager
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
@@ -14,9 +15,10 @@ class WirelessStateWrapper(private val ctx:Context){
 
     private lateinit var wifiManager :WifiManager
     private val bluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+    private val locationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
             wifiManager = ctx.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         }
     }
@@ -30,6 +32,8 @@ class WirelessStateWrapper(private val ctx:Context){
         }
     }
 
+    fun getWifiState() = wifiManager.wifiState
+
     @SuppressLint("MissingPermission")
     fun tryEnableBluetooth(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
@@ -38,4 +42,12 @@ class WirelessStateWrapper(private val ctx:Context){
             bluetoothManager.adapter.enable()
         }
     }
+
+    fun getBluetoothState() = bluetoothManager.adapter.state
+
+    fun tryEnableLocation(){
+        ctx.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+    }
+
+    fun getLocationState() = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }

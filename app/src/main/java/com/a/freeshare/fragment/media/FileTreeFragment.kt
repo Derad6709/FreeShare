@@ -45,6 +45,21 @@ class FileTreeFragment : BaseFragment(), CommonSelectionImpl<FileItem> {
         arguments?.let {
                sourceDirPath = it.getString(SRC_DIR_PATH)!!
         }
+
+        if (savedInstanceState == null) {
+            directoryStack = Stack<String>().apply {
+                push(sourceDirPath)
+            }
+        } else {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                directoryStack = savedInstanceState.getSerializable(DIR_STACK,Stack::class.java) as Stack<String>
+            } else {
+                directoryStack = savedInstanceState.getSerializable(DIR_STACK) as Stack<String>
+            }
+        }
+
+
     }
 
     override fun onCreateView(
@@ -58,18 +73,7 @@ class FileTreeFragment : BaseFragment(), CommonSelectionImpl<FileItem> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        directoryStack = if (savedInstanceState == null) {
-            Stack<String>().apply {
-                push(sourceDirPath)
-            }
-        } else{
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                savedInstanceState.getSerializable(DIR_STACK,Stack::class.java) as Stack<String>
-            } else {
-                savedInstanceState.getSerializable(DIR_STACK) as Stack<String>
-            }
-        }
         dAdapter = if (savedInstanceState==null) {
 
             items = arrayListOf()

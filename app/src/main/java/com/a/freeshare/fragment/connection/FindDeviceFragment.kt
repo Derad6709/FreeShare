@@ -1,13 +1,13 @@
 package com.a.freeshare.fragment.connection
 
 import android.animation.ValueAnimator
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.net.wifi.WifiManager
+import android.net.wifi.WpsInfo
 import android.net.wifi.p2p.*
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,10 +16,15 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.FloatRange
 import androidx.annotation.NonNull
+import androidx.fragment.app.commit
 import com.a.freeshare.R
+import com.a.freeshare.SocketTransferService
 import com.a.freeshare.activity.SessionActivity
 import com.a.freeshare.fragment.BaseFragment
 import com.a.freeshare.impl.ConnectionImpl
+import com.a.freeshare.impl.SocketListener
+import com.a.freeshare.impl.TransferImpl
+import com.a.freeshare.util.WirelessStateWrapper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.snackbar.Snackbar
@@ -28,6 +33,7 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
 
     companion object {
         const val DEVICE_LIST = "device_list"
+        val TAG = FindDeviceFragment::class.simpleName
     }
 
     private lateinit var deviceNames: ArrayList<String>
@@ -52,6 +58,13 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
         (requireActivity() as SessionActivity).getP2pReceiver()
     }
 
+    private lateinit var statesWrapper: WirelessStateWrapper
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        statesWrapper = WirelessStateWrapper(requireActivity())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,16 +87,7 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
 
                  if (p2pReceiver.p2pState == WifiP2pManager.WIFI_P2P_STATE_ENABLED && p2pReceiver.discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED){
 
-                     manager.discoverPeers(channel,object :WifiP2pManager.ActionListener{
-
-                         override fun onSuccess() {
-                             Log.i(TAG,"discover command sent success")
-                         }
-
-                         override fun onFailure(p0: Int) {
-                             Log.e(TAG,"discover command failed : $p0")
-                         }
-                     })
+                     discoverPeers()
                  }else if (p2pReceiver.p2pState == WifiP2pManager.WIFI_P2P_STATE_DISABLED){
                      showSnackBarAboutWifi()
                  }
@@ -91,6 +95,7 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
         }
 
         if (savedInstanceState == null) {
+
             deviceNames = ArrayList()
             dAdapter = ArrayAdapter(
                 requireActivity(), android.R.layout.simple_list_item_1,
@@ -112,7 +117,7 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
                     }
                 }
             } catch (npe: NullPointerException) {
-
+               Log.e(TAG,"last devices are null")
             }
 
             dAdapter = ArrayAdapter(
@@ -124,12 +129,7 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
         devicesListView.apply {
             adapter = dAdapter
 
-            onItemClickListener = object : AdapterView.OnItemClickListener {
-                override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-
-                    showConfirmConnectDialog(p2)
-                }
-            }
+            onItemClickListener = AdapterView.OnItemClickListener { p0, p1, p2, p3 -> showConfirmConnectDialog(p2) }
 
             onItemLongClickListener = object : AdapterView.OnItemLongClickListener {
 
@@ -155,16 +155,7 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
             }
         }
 
-        if(p2pReceiver.discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED)manager.discoverPeers(channel,object :WifiP2pManager.ActionListener{
-
-            override fun onFailure(p0: Int) {
-
-            }
-
-            override fun onSuccess() {
-                Log.d(TAG,"discover command send")
-            }
-        })
+        if(p2pReceiver.discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED)discoverPeers()
 
     }
 
@@ -188,19 +179,10 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
 
         if (!enabled){
               showSnackBarAboutWifi()
-
+              scanProgress.visibility = View.GONE
           }else if (enabled && p2pReceiver.discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED){
 
-              manager.discoverPeers(channel,object :WifiP2pManager.ActionListener{
-
-                  override fun onFailure(p0: Int) {
-
-                  }
-
-                  override fun onSuccess() {
-                      Log.d(TAG,"discover command send")
-                  }
-              })
+              discoverPeers()
           }
     }
 
@@ -222,6 +204,18 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
 
     override fun onWifiP2pConnection(wifiP2pInfo: WifiP2pInfo) {
 
+            if (wifiP2pInfo.groupFormed){
+
+                val transferFragment = TransferFragment().apply {
+                    arguments = Bundle().apply {
+                        putParcelable(P2P_INFO,wifiP2pInfo)
+                    }
+                }
+
+                requireActivity().supportFragmentManager.commit {
+                    replace(R.id.activity_session_container,transferFragment,BaseFragment.TAG)
+                }
+            }
     }
 
     override fun onChannelDisconnected() {
@@ -233,34 +227,35 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
         val dialog = MaterialAlertDialogBuilder(requireActivity())
         dialog.setTitle(R.string.confirm)
         dialog.setMessage("${getString(R.string.connect_to)} ${deviceNames.get(deviceIndex)}")
-        dialog.setPositiveButton(R.string.connect, object : DialogInterface.OnClickListener {
-            override fun onClick(p0: DialogInterface?, p1: Int) {
-
-                connect(devices!!.deviceList.toMutableList().get(deviceIndex))
-            }
-        })
+        dialog.setPositiveButton(R.string.connect) { p0, p1 -> connect(devices!!.deviceList.toMutableList()[deviceIndex]) }
         dialog.show()
     }
 
     private fun connect(device: WifiP2pDevice) {
 
         val config = WifiP2pConfig()
-        config.deviceAddress = device.deviceName
+        config.deviceAddress = device.deviceAddress
+        config.wps.setup = WpsInfo.PBC
+
+        Toast.makeText(requireActivity(),"trying connect to ${device.deviceName},${device.deviceAddress}",Toast.LENGTH_SHORT).show()
 
         manager.connect(channel, config, object : WifiP2pManager.ActionListener {
 
             override fun onFailure(p0: Int) {
                 Log.e(TAG, "connect command failed : $p0")
+                Toast.makeText(requireActivity(),"connection init failed",Toast.LENGTH_SHORT).show()
             }
 
             override fun onSuccess() {
                 Log.d(TAG, "connection init")
+                Toast.makeText(requireActivity(),"connection started",Toast.LENGTH_SHORT).show()
             }
 
         })
     }
 
     private fun showSnackBarAboutWifi(){
+
         val snack = Snackbar.make(requireContext(),requireView(),"Mak sure wifi is turned on",Snackbar.LENGTH_LONG)
         snack.setAction("Turn on",View.OnClickListener {
              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
@@ -274,19 +269,32 @@ class FindDeviceFragment : BaseFragment(), ConnectionImpl {
         snack.show()
     }
 
-    private fun viewScaleAnimate(
-        @NonNull v: View,
-        @FloatRange(0.0, 1.0) scaleStart: Float,
-        @FloatRange(0.0, 1.0) scaleEnd: Float
-    ) {
-        ValueAnimator.ofFloat(scaleStart, scaleEnd).apply {
-            duration = 500L
-            addUpdateListener {
-                val value = it.animatedValue as Float
-                v.scaleX = value
-                v.scaleY = value
-            }
-            start()
+    private fun snackIfDiscoverError(){
+
+        if (p2pReceiver.p2pState == WifiP2pManager.WIFI_P2P_STATE_ENABLED && !statesWrapper.getLocationState())
+        {
+            Snackbar.make(requireContext(),requireView(),"Location access ERROR!",Snackbar.LENGTH_LONG)
+                .setAction("Enable") {
+                    statesWrapper.tryEnableLocation()
+                }.show()
         }
     }
+
+    private fun discoverPeers(){
+
+        manager.discoverPeers(channel,object :WifiP2pManager.ActionListener{
+
+            override fun onSuccess() {
+                Log.i(TAG,"discover command sent success")
+            }
+
+            override fun onFailure(p0: Int) {
+                Log.e(TAG,"discover command failed : $p0")
+
+                snackIfDiscoverError()
+            }
+        })
+    }
+
+
 }

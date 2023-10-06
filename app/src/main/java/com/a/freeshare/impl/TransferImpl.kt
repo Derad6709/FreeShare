@@ -1,12 +1,12 @@
 package com.a.freeshare.impl
 
-interface TransferImpl<K> {
+interface TransferImpl {
 
-    fun onStartSend(o:K)
-    fun onBytesSent(o:K,bytes:Long)
-    fun onEndSend(o:K)
+    fun onStartSend(index:Int,name:String,absPath:String,mime:String?,length:Long)
+    fun onBytesSent(index:Int,bytes:Long)
+    fun onEndSend(index: Int)
 
-    fun onStartReceive(o:K)
-    fun onBytesReceived(o:K)
-    fun onEndReceive(o:K)
+    fun onStartReceive(index: Int,name: String,absPath: String,mime: String?,length: Long)
+    fun onBytesReceived(index: Int,bytes: Long)
+    fun onEndReceive(index: Int)
 }

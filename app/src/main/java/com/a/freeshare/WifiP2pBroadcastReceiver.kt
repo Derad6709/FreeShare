@@ -60,8 +60,9 @@ class WifiP2pBroadcastReceiver() : BroadcastReceiver() {
 
             WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION->{
                 intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE,WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED).also {
-                    discoveryState = it
-                    callback.onWifiP2pDiscoveryChanged(it == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED)
+                    if (it != discoveryState){
+                        callback.onWifiP2pDiscoveryChanged(it == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED)
+                    }
                 }
             }
 

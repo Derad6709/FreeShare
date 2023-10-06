@@ -8,7 +8,7 @@
     android:layout_margin="@dimen/four_dp">
 
     <ImageView
-        android:id="@+id/layout_file_item_icon"
+        android:id="@+id/layout_receive_icon"
         android:layout_width="@dimen/standard_icon_large"
         android:layout_height="@dimen/standard_icon_large"
         android:layout_margin="@dimen/four_dp"
@@ -20,7 +20,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/layout_file_item_title"
+        android:id="@+id/layout_receive_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/four_dp"
@@ -29,61 +29,34 @@
         android:singleLine="true"
         android:text="Name"
         android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-        app:layout_constraintBottom_toTopOf="@+id/layout_file_item_size_and_duration"
+        app:layout_constraintBottom_toTopOf="@+id/layout_receive_size"
         app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/layout_file_item_icon"
-        app:layout_constraintTop_toTopOf="@+id/layout_file_item_icon"
+        app:layout_constraintStart_toEndOf="@+id/layout_receive_icon"
+        app:layout_constraintTop_toTopOf="@+id/layout_receive_icon"
         app:layout_constraintVertical_chainStyle="spread" />
 
     <TextView
-        android:id="@+id/layout_file_item_size_and_duration"
+        android:id="@+id/layout_receive_size"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/four_dp"
-        android:layout_marginEnd="@dimen/four_dp"
         android:gravity="center_vertical"
-        android:text="size and duration"
-        app:layout_constraintBottom_toBottomOf="@+id/layout_file_item_icon"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/layout_file_item_icon"
-        app:layout_constraintTop_toBottomOf="@+id/layout_file_item_title" />
+        android:text="size"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_receive_icon"
+        app:layout_constraintEnd_toEndOf="@+id/layout_receive_title"
+        app:layout_constraintStart_toEndOf="@+id/layout_receive_icon"
+        app:layout_constraintTop_toBottomOf="@+id/layout_receive_title" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/eight_dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_more_vert_24" />
-
-    <FrameLayout
-        android:id="@+id/layout_file_item_select_panel"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.5"
-        android:background="@drawable/color_primary_round_rect"
-        android:clipToOutline="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageView
-        android:id="@+id/layout_file_item_select_panel_check"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerInside"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/layout_file_item_icon"
-        app:layout_constraintEnd_toEndOf="@+id/layout_file_item_icon"
-        app:layout_constraintStart_toStartOf="@+id/layout_file_item_icon"
-        app:layout_constraintTop_toTopOf="@+id/layout_file_item_icon"
-        app:srcCompat="@drawable/ic_baseline_check_24"
-        app:tint="?attr/colorOnPrimary" />
+        app:srcCompat="@drawable/ic_baseline_cancel_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

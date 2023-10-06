@@ -88,6 +88,8 @@ class PermissionActivity : AppCompatActivity() {
                     }else{
                         requestPermissionIfNeeded(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             STORAGE_PERMISSION_REQUEST_CODE)
+                        requestPermissionIfNeeded(Manifest.permission.READ_EXTERNAL_STORAGE,
+                            STORAGE_PERMISSION_REQUEST_CODE)
                     }
                 }
             }
@@ -108,7 +110,6 @@ class PermissionActivity : AppCompatActivity() {
                 val i = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 i.data = Uri.parse("package:${applicationContext.packageName}")
                 i.addCategory(Intent.CATEGORY_DEFAULT)
-
 
                 startActivityForResult(i, requestCode)
             }

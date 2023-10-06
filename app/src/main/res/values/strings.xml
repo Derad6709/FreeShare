@@ -50,4 +50,6 @@
     <string name="connect_to">Connect to </string>
 
     <string name="rescan">Rescan</string>
+    <string name="is_running">is running</string>
+    <string name="do_not_close_app">Do not close this app</string>
 </resources>

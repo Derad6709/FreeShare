@@ -3,6 +3,7 @@ package com.a.freeshare.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
@@ -22,7 +23,7 @@ class SelectActivity: AppCompatActivity() {
     private lateinit var photosFragment: PhotosFragment
     private lateinit var videosFragment: VideosFragment
     private lateinit var songsFragment: SongsFragment
-    private lateinit var filesFragment: FilesFragment
+    private lateinit var filesFragment: FileTreeFragment
     private lateinit var appsFragment: AppsFragment
 
     private lateinit var latestFragment:BaseFragment
@@ -140,14 +141,18 @@ class SelectActivity: AppCompatActivity() {
            photosFragment = PhotosFragment()
            videosFragment = VideosFragment()
            songsFragment = SongsFragment()
-           filesFragment = FilesFragment()
+           filesFragment = FileTreeFragment().apply {
+               arguments = Bundle().apply {
+                   putString(FileTreeFragment.SRC_DIR_PATH,Environment.getExternalStorageDirectory().absolutePath)
+               }
+           }
            appsFragment = AppsFragment()
 
            supportFragmentManager.commit {
                add(R.id.activity_select_fragment_holder,photosFragment, PhotosFragment.TAG).hide(photosFragment)
                add(R.id.activity_select_fragment_holder,videosFragment, VideosFragment.TAG).hide(videosFragment)
                add(R.id.activity_select_fragment_holder,songsFragment, SongsFragment.TAG).hide(songsFragment)
-               add(R.id.activity_select_fragment_holder,filesFragment, FilesFragment.TAG).hide(filesFragment)
+               add(R.id.activity_select_fragment_holder,filesFragment, FileTreeFragment.TAG).hide(filesFragment)
                add(R.id.activity_select_fragment_holder,appsFragment, AppsFragment.TAG).hide(appsFragment)
            }
 
@@ -156,7 +161,7 @@ class SelectActivity: AppCompatActivity() {
            photosFragment = supportFragmentManager.findFragmentByTag(PhotosFragment.TAG) as PhotosFragment
            videosFragment = supportFragmentManager.findFragmentByTag(VideosFragment.TAG) as VideosFragment
            songsFragment = supportFragmentManager.findFragmentByTag(SongsFragment.TAG) as SongsFragment
-           filesFragment = supportFragmentManager.findFragmentByTag(FilesFragment.TAG) as FilesFragment
+           filesFragment = supportFragmentManager.findFragmentByTag(FileTreeFragment.TAG) as FileTreeFragment
            appsFragment = supportFragmentManager.findFragmentByTag(AppsFragment.TAG) as AppsFragment
 
            latestFragment = supportFragmentManager.findFragmentByTag(savedInstanceState.getString(
