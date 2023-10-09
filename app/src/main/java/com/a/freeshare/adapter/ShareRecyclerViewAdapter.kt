@@ -1,4 +1,29 @@
-
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.net.wifi.p2p.WifiP2pInfo
+import android.os.*
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.a.freeshare.R
+import com.a.freeshare.SocketTransferService
+import com.a.freeshare.adapter.viewholder.AbsBaseHolder
+import com.a.freeshare.fragment.BaseFragment
+import com.a.freeshare.impl.SocketListener
+import com.a.freeshare.impl.TransferImpl
+import com.a.freeshare.obj.FileItem
+import com.a.freeshare.obj.HelperItem
+import com.a.freeshare.util.FileUtil
+import java.io.File
+import java.lang.NullPointerException
     class ShareRecyclerViewAdapter(private var items:ArrayList<HelperItem>):RecyclerView.Adapter<ShareRecyclerViewAdapter.BaseViewHolder>(){
 
         open class BaseViewHolder(private val itemView:View):AbsBaseHolder<HelperItem>(itemView){
