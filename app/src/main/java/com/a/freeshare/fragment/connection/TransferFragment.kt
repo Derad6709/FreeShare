@@ -40,8 +40,8 @@ class TransferFragment:BaseFragment() {
     companion object{
         val TAG = TransferFragment::class.simpleName
 
-        private const val TRANSFER_VIEW_TYPE_SEND = 0
-        private const val TRANSFER_VIEW_TYPE_RECEIVE = 1
+        const val TRANSFER_VIEW_TYPE_SEND = 0
+        const val TRANSFER_VIEW_TYPE_RECEIVE = 1
     }
 
     private var itemsToSend:ArrayList<FileItem>? = null
