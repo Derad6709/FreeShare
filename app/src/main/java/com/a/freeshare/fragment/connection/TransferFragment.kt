@@ -27,6 +27,8 @@ import com.a.freeshare.util.FileUtil
 import java.io.File
 import java.lang.NullPointerException
 
+import com.a.freeshare.adapter.ShareRecyclerViewAdapter
+
 class TransferFragment:BaseFragment() {
 
     class NonPredictiveLinearLayoutManager(context:Context):LinearLayoutManager(context){
