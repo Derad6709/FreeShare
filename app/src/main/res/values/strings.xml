@@ -52,4 +52,11 @@
     <string name="rescan">Rescan</string>
     <string name="is_running">is running</string>
     <string name="do_not_close_app">Do not close this app</string>
+
+    <string name="waiting">Waiting</string>
+
+    <string name="disconnect">Disconnect</string>
+    <string name="send_more">Send more</string>
+
+    <string name="clear_all">Clear all</string>
 </resources>

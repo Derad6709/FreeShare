@@ -89,6 +89,16 @@ class VideosFragment :
         return dAdapter.getSelection()
     }
 
+    override fun clearSelection() {
+       val tempSelected:ArrayList<Long> = dAdapter.getSelection().clone() as ArrayList<Long>
+        dAdapter.clearSelection()
+        for (o in 0 until mediaSourceViewModel.fileMediaArr.value!!.size){
+            if (tempSelected.contains(dAdapter.getItemId(o))){
+                dAdapter.notifyItemChanged(o)
+            }
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLongArray(SELECTION_HASH_ARRAY,getSelection().toLongArray())

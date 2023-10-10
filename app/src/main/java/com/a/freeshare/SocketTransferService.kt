@@ -15,7 +15,7 @@ import com.a.freeshare.impl.SocketListener
 import com.a.freeshare.impl.TransferImpl
 import com.a.freeshare.obj.FileItem
 
-class SocketTransferService : Service(),SocketListener,TransferImpl {
+class SocketTransferService : Service(),SocketListener,TransferImpl,Session.SessionImpl {
 
     private lateinit var session: Session
 
@@ -27,6 +27,7 @@ class SocketTransferService : Service(),SocketListener,TransferImpl {
 
     private var socketListener: SocketListener? = null
     private var transferImpl: TransferImpl? = null
+    private var sessionImpl:Session.SessionImpl? = null
 
     private var host:String? = null
 
@@ -81,15 +82,19 @@ class SocketTransferService : Service(),SocketListener,TransferImpl {
         this.transferImpl = transferImpl
     }
 
+    fun setSessionImpl(sessionImpl: Session.SessionImpl){
+        this.sessionImpl = sessionImpl
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         host = intent?.getStringExtra(EXTRA_HOST)
 
         session = if (host != null){
-            Session(host!!,applicationContext,this,this)
+            Session(host!!,applicationContext,this,this,this)
 
         }else{
-            Session(applicationContext,this,this)
+            Session(applicationContext,this,this,this)
         }
 
         return START_STICKY
@@ -122,20 +127,30 @@ class SocketTransferService : Service(),SocketListener,TransferImpl {
     }
 
     fun startSession(){
-        Log.d("SocketService","session is starting")
-            session.startSession()
+        session.startSession()
     }
 
     override fun onSocket() {
         socketListener?.onSocket()
     }
 
+    fun addToCancelIndex(at:Int) { session.addToCancelIndex(at) }
+
     fun send(fileItems:List<FileItem>){
         session.send(fileItems)
     }
 
+    fun sendReceiveCommand(fileItems: List<FileItem>){
+        session.sendReceiveCommand(fileItems)
+    }
+
     fun receive(){
         session.receive()
+    }
+
+    @Synchronized
+    override fun onSendFiles(startPosition: Int, count: Int, files: List<FileItem>) {
+        transferImpl?.onSendFiles(startPosition, count, files)
     }
 
     @Synchronized
@@ -146,17 +161,25 @@ class SocketTransferService : Service(),SocketListener,TransferImpl {
         mime: String?,
         length: Long
     ) {
+        Log.d("SessionSocketService","SocketTransferService onStart()")
         transferImpl?.onStartSend(index, name, absPath, mime, length)
+
     }
 
     @Synchronized
     override fun onBytesSent(index: Int, bytes: Long) {
+        Log.d("SessionSocketService","SocketTransferService onBytes()")
       transferImpl?.onBytesSent(index,bytes)
     }
 
     @Synchronized
     override fun onEndSend(index: Int) {
       transferImpl?.onEndSend(index)
+    }
+
+    @Synchronized
+    override fun onReceiveFiles(startPosition: Int, count: Int) {
+        transferImpl?.onReceiveFiles(startPosition, count)
     }
 
     @Synchronized
@@ -178,5 +201,20 @@ class SocketTransferService : Service(),SocketListener,TransferImpl {
     @Synchronized
     override fun onEndReceive(index: Int) {
       transferImpl?.onEndReceive(index)
+    }
+
+    @Synchronized
+    override fun onSkipped(index: Int) {
+        transferImpl?.onSkipped(index)
+    }
+
+    @Synchronized
+    override fun onStarted() {
+        sessionImpl?.onStarted()
+    }
+
+    @Synchronized
+    override fun onEnded() {
+        sessionImpl?.onEnded()
     }
 }

@@ -133,6 +133,17 @@ class FileTreeFragment : BaseFragment(), CommonSelectionImpl<FileItem> {
         return dAdapter.getSelection()
     }
 
+    override fun clearSelection() {
+        val tempSelected:ArrayList<Long> = dAdapter.getSelection().clone() as ArrayList<Long>
+        dAdapter.clearSelection()
+        for (o in 0 until items.size){
+            if (tempSelected.contains(dAdapter.getItemId(o))){
+                dAdapter.notifyItemChanged(o)
+            }
+        }
+    }
+
+
     override fun hasCleared(): Boolean {
 
         return true

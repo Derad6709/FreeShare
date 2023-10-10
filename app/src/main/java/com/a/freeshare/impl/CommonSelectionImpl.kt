@@ -4,4 +4,5 @@ interface CommonSelectionImpl<K>{
     fun getTotalItems():List<K>
     fun getSelectedItems():List<K>
     fun getSelection():ArrayList<Long>
+    fun clearSelection()
 }

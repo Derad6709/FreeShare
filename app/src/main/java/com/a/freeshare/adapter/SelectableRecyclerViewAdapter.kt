@@ -93,4 +93,8 @@ abstract class SelectableRecyclerViewAdapter<ITEM,VH : RecyclerView.ViewHolder>(
         notifyDataSetChanged()
     }
 
+    fun clearSelection(){
+        selectedItemsHashes.clear()
+
+    }
 }

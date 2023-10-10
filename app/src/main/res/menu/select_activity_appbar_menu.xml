@@ -40,4 +40,7 @@
           android:title="@string/grid_view"
           android:checkable="true"/>
 
+    <item android:id="@+id/clear_selection"
+          android:title="@string/clear_all"/>
+
 </menu>

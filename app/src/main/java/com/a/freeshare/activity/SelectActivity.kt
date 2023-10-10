@@ -15,6 +15,7 @@ import com.a.freeshare.impl.CommonSelectionImpl
 import com.a.freeshare.obj.FileItem
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.lang.NullPointerException
 
 class SelectActivity: AppCompatActivity() {
 
@@ -30,6 +31,7 @@ class SelectActivity: AppCompatActivity() {
 
     companion object{
         private const val LATEST_FRAGMENT_TAG = "latestFragmentTag"
+        const val ACTION_SELECT = "SelectActivity_ACTION_SELECT"
     }
 
     private val backPressedCallback = object : OnBackPressedCallback(true){
@@ -108,23 +110,50 @@ class SelectActivity: AppCompatActivity() {
 
                 for (fragment in supportFragmentManager.fragments){
 
-
-
                   if (fragment is CommonSelectionImpl<*>){
                       arr.addAll(fragment.getSelectedItems() as ArrayList<FileItem>)
                   }
                 }
 
-                val i = Intent(this,SessionActivity::class.java)
-                i.putExtra(BaseFragment.ITEMS,arr)
-                i.putExtra(SessionActivity.SESSION_TYPE,SessionActivity.SESSION_TYPE_SEND)
-                startActivity(i)
+                for (fragment in supportFragmentManager.fragments){
+
+                    if (fragment is CommonSelectionImpl<*>){
+                        try {
+                            fragment.clearSelection()
+                        }catch (npe:NullPointerException){}
+                    }
+                }
+
+                if (intent.action == ACTION_SELECT ){
+
+                    val result = Intent()
+                    result.putExtra(BaseFragment.ITEMS,arr)
+                    setResult(RESULT_OK,result)
+                    finish()
+                }else{
+                    val i = Intent(this,SessionActivity::class.java)
+                    i.putExtra(BaseFragment.ITEMS,arr)
+                    i.putExtra(SessionActivity.SESSION_TYPE,SessionActivity.SESSION_TYPE_SEND)
+                    startActivity(i)
+                }
             }
 
             R.id.sort_by_az,R.id.sort_by_za,
             R.id.sort_by_new,R.id.sort_by_old,
             R.id.sort_by_large,R.id.sort_by_small->{
                if(latestFragment is PhotosFragment)(latestFragment as PhotosFragment).sort(item.itemId)
+            }
+
+            R.id.clear_selection->{
+                for (fragment in supportFragmentManager.fragments){
+
+                    if (fragment is CommonSelectionImpl<*>){
+                        try {
+                            fragment.clearSelection()
+                        }catch (npe:NullPointerException){}
+                    }
+                }
+
             }
         }
 
@@ -137,6 +166,7 @@ class SelectActivity: AppCompatActivity() {
     }
 
     private fun initializeFragments(savedInstanceState: Bundle?) {
+
        if (savedInstanceState == null){
            photosFragment = PhotosFragment()
            videosFragment = VideosFragment()

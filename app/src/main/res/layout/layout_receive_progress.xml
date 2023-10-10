@@ -8,9 +8,9 @@
     android:layout_margin="@dimen/four_dp">
 
     <ImageView
-        android:id="@+id/layout_receive_icon"
-        android:layout_width="@dimen/standard_icon_large"
-        android:layout_height="@dimen/standard_icon_large"
+        android:id="@+id/layout_progress_icon"
+        android:layout_width="@dimen/standard_icon_medium"
+        android:layout_height="@dimen/standard_icon_medium"
         android:layout_margin="@dimen/four_dp"
         android:background="@drawable/round_rect"
         android:clipToOutline="true"
@@ -20,7 +20,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/layout_receive_title"
+        android:id="@+id/layout_progress_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/four_dp"
@@ -29,30 +29,30 @@
         android:singleLine="true"
         android:text="Name"
         android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-        app:layout_constraintBottom_toTopOf="@+id/layout_receive_size"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/layout_receive_icon"
-        app:layout_constraintTop_toTopOf="@+id/layout_receive_icon"
+        app:layout_constraintBottom_toTopOf="@+id/layout_progress_size"
+        app:layout_constraintEnd_toStartOf="@+id/layout_progress_cancel"
+        app:layout_constraintStart_toEndOf="@+id/layout_progress_icon"
+        app:layout_constraintTop_toTopOf="@+id/layout_progress_icon"
         app:layout_constraintVertical_chainStyle="spread" />
 
     <TextView
-        android:id="@+id/layout_receive_size"
+        android:id="@+id/layout_progress_size"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/four_dp"
+        android:layout_marginEnd="@dimen/four_dp"
         android:gravity="center_vertical"
         android:text="size"
-        app:layout_constraintBottom_toBottomOf="@+id/layout_receive_icon"
-        app:layout_constraintEnd_toEndOf="@+id/layout_receive_title"
-        app:layout_constraintStart_toEndOf="@+id/layout_receive_icon"
-        app:layout_constraintTop_toBottomOf="@+id/layout_receive_title" />
+        app:layout_constraintBottom_toBottomOf="@+id/layout_progress_icon"
+        app:layout_constraintEnd_toStartOf="@+id/layout_progress_cancel"
+        app:layout_constraintStart_toEndOf="@+id/layout_progress_icon"
+        app:layout_constraintTop_toBottomOf="@+id/layout_progress_title" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/layout_progress_cancel"
+        android:layout_width="@dimen/standard_icon"
+        android:layout_height="@dimen/standard_icon"
         android:layout_margin="@dimen/eight_dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

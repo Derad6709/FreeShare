@@ -1,6 +1,7 @@
 package com.a.freeshare.activity
 
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pDevice
@@ -89,6 +90,10 @@ class SessionActivity : AppCompatActivity() {
 
         p2pReceiver = WifiP2pBroadcastReceiver(p2pManager,channel,connectionCallbacks)
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     @NonNull

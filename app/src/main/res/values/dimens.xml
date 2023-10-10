@@ -5,7 +5,7 @@
     <dimen name="eight_dp">8dp</dimen>
     <dimen name="sixteen_dp">16dp</dimen>
 
-    <dimen name="standard_icon">24dp</dimen>
-    <dimen name="standard_icon_medium">32dp</dimen>
-    <dimen name="standard_icon_large">64dp</dimen>
+    <dimen name="standard_icon">32dp</dimen>
+    <dimen name="standard_icon_medium">64dp</dimen>
+    <dimen name="standard_icon_large">128dp</dimen>
 </resources>

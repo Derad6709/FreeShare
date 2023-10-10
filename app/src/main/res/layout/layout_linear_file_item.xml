@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/layout_file_item_icon"
-        android:layout_width="@dimen/standard_icon_large"
-        android:layout_height="@dimen/standard_icon_large"
+        android:layout_width="@dimen/standard_icon_medium"
+        android:layout_height="@dimen/standard_icon_medium"
         android:layout_margin="@dimen/four_dp"
         android:background="@drawable/round_rect"
         android:clipToOutline="true"
