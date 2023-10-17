@@ -70,9 +70,6 @@ class Session {
         override fun run() {
             val fileItems = arg as List<FileItem>
 
-            sessionState = SessionState.STARTED
-            sessionImpl.onStarted()
-
             Log.d(TAG,"files items = ${fileItems.size}")
             //create data i/o from the socket streams
 
@@ -83,6 +80,9 @@ class Session {
             val startIndex = itemKeep.size
             val endIndex = itemKeep.size+fileItems.size
 
+            sessionState = SessionState.STARTED
+            sessionImpl.onStarted()
+            
             transferListener.onSendFiles(startIndex,fileItems.size,fileItems)
 
             //next iterate through the file items and send files
@@ -168,14 +168,11 @@ class Session {
             sessionState = SessionState.ENDED
             sessionImpl.onEnded()
 
-
+            receive()
         }
     }
 
     private val receiveRunnable:Runnable = Runnable{
-
-        sessionState = SessionState.STARTED
-        sessionImpl.onStarted()
 
         //get total items count to be received
         Log.d("Session ","receiving total count")
@@ -185,6 +182,9 @@ class Session {
         val startIndex = itemKeep.size
         val endIndex = itemKeep.size+itemCount
 
+        sessionState = SessionState.STARTED
+        sessionImpl.onStarted() 
+        
         transferListener.onReceiveFiles(startIndex,itemCount)
 
         Log.d("Session","iterating through items")
@@ -258,6 +258,7 @@ class Session {
         sessionState = SessionState.ENDED
         sessionImpl.onEnded()
 
+        receive()
     }
 
     constructor(context:Context, @NonNull socketListener: SocketListener, @NonNull transferListener: TransferImpl,@NonNull sessionImpl: SessionImpl){
@@ -332,25 +333,6 @@ class Session {
 
     fun send(fileItems:List<FileItem>){
         Executors.newSingleThreadExecutor().execute(SendRunnable(fileItems))
-    }
-
-    private fun waitReceive(){
-
-        var cmd:String? = null
-        while (!Thread.interrupted()){
-
-            try {
-
-               cmd = dataIn.readUTF()
-               if (cmd != null && cmd.equals(CMD_RCV))break
-            }catch (e:Exception){
-               e.printStackTrace()
-            }
-
-            Log.d("Session","no command sent yet")
-        }
-
-        if (cmd != null && cmd.equals(CMD_RCV))receiveRunnable.run()
     }
 
     fun sendReceiveCommand(fileItems: List<FileItem>){
