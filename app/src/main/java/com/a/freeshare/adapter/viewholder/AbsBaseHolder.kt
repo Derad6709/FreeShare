@@ -18,11 +18,17 @@ import java.net.URLConnection
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-abstract class AbsBaseHolder<K>(itemView: View):RecyclerView.ViewHolder(itemView){
+abstract class AbsBaseHolder<K>(itemView: View,clickListener:View.OnClickListener?):RecyclerView.ViewHolder(itemView){
+
+    init {
+        itemView.setOnClickListener {
+            clickListener?.onClick(it)
+        }
+    }
 
     abstract fun bind(a: K)
 
-    protected fun setIconOfFile(icon:ImageView,absPath:String,mimeType:String?){
+    protected fun setIconOfFile(position:Int,icon:ImageView,absPath:String,mimeType:String?){
 
 
         val sourceFile = File(absPath)
@@ -64,17 +70,25 @@ abstract class AbsBaseHolder<K>(itemView: View):RecyclerView.ViewHolder(itemView
 
                 }else if (mime.contains("vnd")){
 
-                    val pi = itemView.context.applicationContext.packageManager.getPackageArchiveInfo(sourceFile.absolutePath,0)
-                    pi?.applicationInfo?.sourceDir = sourceFile.absolutePath
-                    pi?.applicationInfo?.publicSourceDir = sourceFile.absolutePath
-
                     Thread{
+
+                        val pi = itemView.context.applicationContext.packageManager.getPackageArchiveInfo(sourceFile.absolutePath,0)
+                        pi?.applicationInfo?.sourceDir = sourceFile.absolutePath
+                        pi?.applicationInfo?.publicSourceDir = sourceFile.absolutePath
 
                         val logo = pi?.applicationInfo?.loadIcon(itemView.context.applicationContext.packageManager)
 
                         icon.post {
-                            icon.setImageDrawable(logo)
-                            icon.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                          if (position == adapterPosition){
+
+                              icon.setImageDrawable(logo)
+                              icon.scaleType = ImageView.ScaleType.FIT_XY
+
+                              icon.layoutParams.width = icon.context.resources.getDimension(R.dimen.standard_icon_medium).toInt()
+                              icon.layoutParams.height  = icon.context.resources.getDimension(R.dimen.standard_icon_medium).toInt()
+
+                              icon.requestLayout()
+                          }
                         }
                     }.start()
 

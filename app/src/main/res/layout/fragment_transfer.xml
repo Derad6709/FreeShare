@@ -40,13 +40,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="@dimen/sixteen_dp"
+        android:background="@drawable/round_rect"
+        android:clipToOutline="true"
+        android:elevation="@dimen/eight_dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:id="@+id/fragment_transfer_disconnect"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/eight_dp"
@@ -58,8 +63,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            style="@style/Widget.Material3.Button.Icon"
             android:id="@+id/fragment_transfer_send_more"
+            style="@style/Widget.Material3.Button.Icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/eight_dp"

@@ -117,7 +117,7 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
     }
 
     private fun stopServiceAndHaltOperation(){
-        session.getControlThread().interrupt()
+        session.close()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
         }else{

@@ -1,15 +1,20 @@
 package com.a.freeshare.activity
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.wifi.p2p.WifiP2pManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.a.freeshare.AppConstants
 import com.a.freeshare.R
+import com.a.freeshare.fragment.BaseFragment
+import com.a.freeshare.obj.FileItem
 import com.a.freeshare.util.PermissionWrapper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.lang.StringBuilder
@@ -54,6 +59,7 @@ class HomeActivity : AppCompatActivity() {
                     startActivityForResult(i, PERMISSIONS_RESOLVE_REQUEST_CODE)
                 }else{
                     startActivity(Intent(this,SelectActivity::class.java))
+
                 }
             }
         }
@@ -95,6 +101,7 @@ class HomeActivity : AppCompatActivity() {
                   startActivity(intent)
               }
             }
+
         }
     }
 }

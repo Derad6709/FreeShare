@@ -19,6 +19,8 @@ class FileItemRecyclerAdapter(items: ArrayList<FileItem>, private var mViewType:
         const val LAYOUT_TYPE_GRID = 1
     }
 
+    private var listener:View.OnClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder {
         val inflater = LayoutInflater.from(parent.context)
         val inflatedView = if (viewType == LAYOUT_TYPE_LINEAR){
@@ -29,7 +31,7 @@ class FileItemRecyclerAdapter(items: ArrayList<FileItem>, private var mViewType:
 
         }
 
-        return BaseHolder(inflatedView,this)
+        return BaseHolder(inflatedView,this,items,listener)
     }
 
     override fun onBindViewHolder(holder: BaseHolder, position: Int) {
@@ -46,4 +48,11 @@ class FileItemRecyclerAdapter(items: ArrayList<FileItem>, private var mViewType:
         return mViewType
     }
 
+    override fun getItemId(position: Int): Long {
+        return items[position].absPath.hashCode().toLong()
+    }
+
+    fun setItemViewOnClickListener(listener:View.OnClickListener){
+        this.listener = listener
+    }
 }

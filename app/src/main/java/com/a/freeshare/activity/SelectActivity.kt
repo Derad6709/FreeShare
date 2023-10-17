@@ -115,14 +115,14 @@ class SelectActivity: AppCompatActivity() {
                   }
                 }
 
-                for (fragment in supportFragmentManager.fragments){
+                /*for (fragment in supportFragmentManager.fragments){
 
                     if (fragment is CommonSelectionImpl<*>){
                         try {
                             fragment.clearSelection()
                         }catch (npe:NullPointerException){}
                     }
-                }
+                }*/
 
                 if (intent.action == ACTION_SELECT ){
 

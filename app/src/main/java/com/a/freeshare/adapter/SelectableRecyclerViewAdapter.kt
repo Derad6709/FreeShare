@@ -29,10 +29,6 @@ abstract class SelectableRecyclerViewAdapter<ITEM,VH : RecyclerView.ViewHolder>(
     abstract override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH
     abstract override fun onBindViewHolder(holder: VH, position: Int)
 
-    override fun getItemId(position: Int): Long {
-        return items[position].hashCode().toLong()
-    }
-
     override fun getItemCount(): Int = items.size
 
     fun toggleSelection(o:ITEM){

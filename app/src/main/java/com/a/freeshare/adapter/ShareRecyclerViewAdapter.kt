@@ -16,7 +16,7 @@ import com.a.freeshare.util.FileUtil
 
 class ShareRecyclerViewAdapter(private var items:ArrayList<HelperItem>, private val service: SocketTransferService): RecyclerView.Adapter<ShareRecyclerViewAdapter.BaseViewHolder>(){
 
-    inner class BaseViewHolder(private val itemView: View): AbsBaseHolder<HelperItem>(itemView){
+    inner class BaseViewHolder(private val itemView: View): AbsBaseHolder<HelperItem>(itemView,null){
 
         private val txtName: TextView = itemView.findViewById(R.id.layout_progress_title)
         private val txtSize: TextView = itemView.findViewById(R.id.layout_progress_size)
@@ -29,63 +29,62 @@ class ShareRecyclerViewAdapter(private var items:ArrayList<HelperItem>, private 
 
         private fun setItemState(a:HelperItem){
 
-            if (a.itemState == HelperItem.ItemState.ENQUEUED || a.itemState == HelperItem.ItemState.STARTED || a.itemState == HelperItem.ItemState.IN_PROGRESS){
+            when(a.itemState){
 
-                if (a.itemState == HelperItem.ItemState.ENQUEUED ){
+                HelperItem.ItemState.ENQUEUED->{
                     cancelIcon.setOnClickListener {
                         service.addToCancelIndex(items.indexOf(a))
                     }
-                }else if (a.itemState == HelperItem.ItemState.STARTED){
-
-                    if (a.sharedType == HelperItem.SENT){
-                        setIconOfFile(imgIcon,a.absPath!!,a.mime)}
-
-
-                    val sizeText = FileUtil.getFormattedLongData(a.currentValue).plus("/").plus(FileUtil.getFormattedLongData(a.maxValue!!))
-
-                    txtName.text = a.name
-                    txtSize.text = sizeText
-                    cancelIcon.visibility = View.GONE
-                }else{
-
-                    val sizeText = FileUtil.getFormattedLongData(a.currentValue).plus("/").plus(FileUtil.getFormattedLongData(a.maxValue!!))
-
-                    txtName.text = a.name
-                    txtSize.text = sizeText
-                    cancelIcon.visibility = View.GONE
-
-                    Thread{
-
-                        while (a.itemState != HelperItem.ItemState.ENDED){
-
-                            val sizeText = FileUtil.getFormattedLongData(a.currentValue).plus("/").plus(FileUtil.getFormattedLongData(a.maxValue!!))
-
-                            itemView.post {
-                                txtSize.text = sizeText
-                            }
-
-                            Thread.sleep(1000)
-                        }
-                    }.start()
-
-                    if (a.sharedType == HelperItem.SENT){
-                        setIconOfFile(imgIcon,a.absPath!!,a.mime)}
-
-
                 }
 
-            }else if(a.itemState == HelperItem.ItemState.ENDED){
+                HelperItem.ItemState.STARTED->{
 
-                setIconOfFile(imgIcon,a.absPath!!,a.mime)
+                      trackData(a)
+                }
 
-                val sizeText = FileUtil.getFormattedLongData(a.currentValue).plus("/").plus(FileUtil.getFormattedLongData(a.maxValue!!))
+                HelperItem.ItemState.IN_PROGRESS->{
+                    trackData(a)
+                }
 
-                cancelIcon.setImageDrawable(itemView.context.getDrawable(R.drawable.ic_baseline_check_24))
-                cancelIcon.visibility = View.VISIBLE
-                txtName.text = a.name
-                txtSize.text = sizeText
+                HelperItem.ItemState.ENDED->{
+
+                    setIconOfFile(items.indexOf(a),imgIcon,a.absPath!!,a.mime)
+
+                    val sizeText = FileUtil.getFormattedLongData(a.currentValue).plus("/").plus(FileUtil.getFormattedLongData(a.maxValue!!))
+
+                    cancelIcon.setImageDrawable(itemView.context.getDrawable(R.drawable.ic_baseline_check_24))
+                    cancelIcon.visibility = View.VISIBLE
+                    txtName.text = a.name
+                    txtSize.text = sizeText
+                }
             }
 
+        }
+
+        private fun trackData(a:HelperItem){
+            if (a.sharedType == HelperItem.SENT){
+                setIconOfFile(items.indexOf(a),imgIcon,a.absPath!!,a.mime)}
+
+            val sizeText = FileUtil.getFormattedLongData(a.currentValue).plus("/").plus(FileUtil.getFormattedLongData(a.maxValue!!))
+
+            txtName.text = a.name
+            txtSize.text = sizeText
+            cancelIcon.visibility = View.GONE
+
+            Thread{
+
+                while (a.itemState != HelperItem.ItemState.ENDED){
+
+                    val sizeText = FileUtil.getFormattedLongData(a.currentValue).plus("/").plus(FileUtil.getFormattedLongData(a.maxValue!!))
+
+                    itemView.post {
+                        txtSize.text = sizeText
+                    }
+
+                    Thread.sleep(1000)
+                }
+
+            }.start()
         }
     }
 
@@ -111,5 +110,6 @@ class ShareRecyclerViewAdapter(private var items:ArrayList<HelperItem>, private 
     override fun getItemViewType(position: Int): Int {
         return items[position].sharedType
     }
+
 
 }

@@ -3,6 +3,7 @@ package com.a.freeshare.fragment.media
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -79,7 +80,9 @@ class FileTreeFragment : BaseFragment(), CommonSelectionImpl<FileItem> {
             items = arrayListOf()
             FileItemRecyclerAdapter(items,FileItemRecyclerAdapter.LAYOUT_TYPE_LINEAR)
         } else{
+
             val selection = savedInstanceState.getLongArray(SELECTION_HASH_ARRAY)
+
             items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 savedInstanceState.getSerializable(ITEMS,ArrayList::class.java) as ArrayList<FileItem>
             } else {
@@ -95,6 +98,8 @@ class FileTreeFragment : BaseFragment(), CommonSelectionImpl<FileItem> {
         (view as RecyclerView).apply {
             layoutManager = LinearLayoutManager(requireActivity())
             adapter = dAdapter
+
+
         }
 
         if (savedInstanceState == null)
