@@ -16,6 +16,15 @@
     <string name="allow_location">Access location</string>
     <string name="allow_location_detail">Location is needed to establish connection with other devices</string>
 
+    <string name="allow_nearby_devices">Access Nearby devices</string>
+    <string name="allow_nearby_devices_detail">Nearby Wifi device permission is needed to find and connect other devices</string>
+
+    <string name="allow_post_notification">Allow post notification</string>
+    <string name="allow_post_notification_detail">POST NOTIFICATION permission is required to notify about app operation and foreground services</string>
+
+    <string name="allow_camera">Allow Camera</string>
+    <string name="allow_camera_detail">Camera permission is for ""scan and connect"" feature</string>
+
     <string name="allow">Allow</string>
     <string name="allowed">Allowed</string>
 
@@ -58,5 +67,21 @@
     <string name="disconnect">Disconnect</string>
     <string name="send_more">Send more</string>
 
+    <string name="select_all">Select all</string>
+    <string name="invert_selection">Select others</string>
     <string name="clear_all">Clear all</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="cancelled">Cancelled</string>
+
+    <string name="sent">Sent</string>
+    <string name="received">Received</string>
+
+    <string name="total">Total</string>
+
+    <string name="middle_dot">\u00B7</string>
+    <string name="proceed">Proceed</string>
+    <string name="search">Search\n</string>
+    <string name="open_with">Open with</string>
+
 </resources>

@@ -18,9 +18,8 @@ class WirelessStateWrapper(private val ctx:Context){
     private val locationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     init {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
-            wifiManager = ctx.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        }
+        wifiManager = ctx.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
     }
 
     fun tryEnableWifi(){

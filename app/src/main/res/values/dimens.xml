@@ -4,8 +4,12 @@
     <dimen name="four_dp">4dp</dimen>
     <dimen name="eight_dp">8dp</dimen>
     <dimen name="sixteen_dp">16dp</dimen>
+    <dimen name="thirty_two_dp">32dp</dimen>
+    <dimen name="sixty_four_dp">64dp</dimen>
+    <dimen name="one_twenty_eight_dp">128dp</dimen>
 
     <dimen name="standard_icon">32dp</dimen>
+    <dimen name="standard_icon_small">48dp</dimen>
     <dimen name="standard_icon_medium">64dp</dimen>
     <dimen name="standard_icon_large">128dp</dimen>
 </resources>

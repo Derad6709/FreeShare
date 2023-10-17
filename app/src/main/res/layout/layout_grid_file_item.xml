@@ -1,85 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/con"
+    xmlns:tools="http://schemas.android.com/tool"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/four_dp"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true">
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground">
 
     <FrameLayout
-        android:id="@+id/layout_file_item_icon_holder"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_rect"
+        android:clipToOutline="true">
+
+       <FrameLayout
+           android:id="@+id/con"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+           <LinearLayout
+
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal|top"
+               android:orientation="vertical">
+
+               <FrameLayout
+                   android:id="@+id/layout_file_item_icon_container"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:background="@drawable/file_item_icon_bg"
+                   android:clipToOutline="true">
+
+                   <view
+                       class="com.a.freeshare.adapter.viewholder.AbsBaseHolder$SquareImageView"
+                   android:id="@+id/layout_file_item_icon"
+                   android:layout_width="match_parent"
+                   android:layout_height="128dp"
+                   android:background="@drawable/round_rect"
+                   android:clipToOutline="true"
+                   android:scaleType="centerCrop"
+                   tools:srcCompat="@tools:sample/avatars" />
+
+               </FrameLayout>
+
+               <com.google.android.material.textview.MaterialTextView
+                   android:id="@+id/layout_file_item_title"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="@dimen/eight_dp"
+                   android:layout_marginTop="9dp"
+                   android:gravity="center_vertical"
+                   android:singleLine="true"
+                   android:text="Name"
+                   android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
+
+               <TextView
+                   android:id="@+id/layout_file_item_size_and_duration"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="@dimen/eight_dp"
+                   android:layout_marginTop="9dp"
+                   android:text="size and duration" />
 
 
-        <ImageView
-            android:id="@+id/layout_file_item_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/four_dp"
-            android:background="@drawable/round_rect"
-            android:clipToOutline="true"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center"
-            tools:srcCompat="@tools:sample/avatars" />
+           </LinearLayout>
 
+           <com.google.android.material.checkbox.MaterialCheckBox
+               android:id="@+id/layout_file_item_check"
+               android:layout_width="24dp"
+               android:layout_height="24dp"
+               android:layout_gravity="end|top"
+               android:layout_margin="@dimen/four_dp"
+               android:background="@drawable/round_checkbox"
+               android:button="@null"
+               android:clickable="false"
+               android:padding="0dp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintTop_toTopOf="parent" />
+
+
+
+       </FrameLayout>
     </FrameLayout>
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/layout_file_item_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/four_dp"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="Name"
-        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_file_item_icon_holder"
-        app:layout_constraintVertical_chainStyle="spread" />
-
-    <TextView
-        android:id="@+id/layout_file_item_size_and_duration"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/four_dp"
-        android:text="size and duration"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_file_item_title" />
-
-    <FrameLayout
-        android:id="@+id/layout_file_item_select_panel"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.5"
-        android:background="@drawable/color_primary_round_rect"
-        android:clipToOutline="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageView
-        android:id="@+id/layout_file_item_select_panel_check"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerInside"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/layout_file_item_icon_holder"
-        app:layout_constraintEnd_toEndOf="@+id/layout_file_item_icon_holder"
-        app:layout_constraintStart_toStartOf="@+id/layout_file_item_icon_holder"
-        app:layout_constraintTop_toTopOf="@+id/layout_file_item_icon_holder"
-        app:srcCompat="@drawable/ic_baseline_check_24"
-        app:tint="?attr/colorOnPrimary" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

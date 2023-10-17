@@ -9,7 +9,7 @@
         android:id="@+id/coordinatorLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/con"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -17,12 +17,23 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:expanded="false">
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="Transfer" />
+                app:title="Transfer"
+                app:navigationIcon="@drawable/ic_baseline_arrow_back_24"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/fragment_transfer_items_of"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/eight_dp"
+                android:textStyle="bold" />
+
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -40,7 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_margin="@dimen/sixteen_dp"
+        android:layout_margin="@dimen/eight_dp"
         android:background="@drawable/round_rect"
         android:clipToOutline="true"
         android:elevation="@dimen/eight_dp"

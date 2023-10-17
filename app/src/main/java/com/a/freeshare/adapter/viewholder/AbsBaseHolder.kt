@@ -1,42 +1,68 @@
 package com.a.freeshare.adapter.viewholder
 
+import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.annotation.Nullable
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.a.freeshare.R
-import com.a.freeshare.adapter.SelectableRecyclerViewAdapter
-import com.a.freeshare.obj.FileItem
+import com.a.freeshare.impl.OnItemClickListener
 import com.bumptech.glide.Glide
 import java.io.File
-import java.net.URLConnection
-import kotlin.math.abs
 import kotlin.math.roundToInt
 
-abstract class AbsBaseHolder<K>(itemView: View,clickListener:View.OnClickListener?):RecyclerView.ViewHolder(itemView){
+abstract class AbsBaseHolder<K>(itemView: View,itemClickListener: OnItemClickListener?):RecyclerView.ViewHolder(itemView){
+
+    private val directoryDrawable: Drawable = ContextCompat.getDrawable(itemView.context,R.drawable.ic_baseline_folder_24)!!
+    private val audioNoteDrawable:Drawable = ContextCompat.getDrawable(itemView.context,R.drawable.ic_baseline_music_note_24)!!
 
     init {
-        itemView.setOnClickListener {
-            clickListener?.onClick(it)
+
+        itemView.setOnClickListener{
+
+            itemClickListener?.onItemClick(it, adapterPosition,this as BaseHolder)
+        }
+
+    }
+
+
+    class SquareImageView:androidx.appcompat.widget.AppCompatImageView{
+
+        constructor(context: Context):super(context)
+        constructor(context: Context,attrs:AttributeSet):super(context, attrs)
+
+        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+            super.onMeasure(widthMeasureSpec,heightMeasureSpec)
+            setMeasuredDimension(measuredWidth,measuredWidth)
         }
     }
 
     abstract fun bind(a: K)
+    abstract fun rebind(a:K)
 
-    protected fun setIconOfFile(position:Int,icon:ImageView,absPath:String,mimeType:String?){
+    protected fun setIconOfFile(name:String,position:Int, icon:ImageView, absPath:String?, uri: Uri?, mimeType:String?){
 
+        var sourceFile:File? = null
 
-        val sourceFile = File(absPath)
+        absPath?.also {
+            sourceFile = File(it)
+        }
 
-        if (sourceFile.isDirectory){
+        itemView.findViewById<FrameLayout>(R.id.layout_file_item_icon_container)?.apply {
+            background = null
+        }
 
-            icon.setImageDrawable(ContextCompat.getDrawable(itemView.context,R.drawable.ic_baseline_folder_24))
+        if ( sourceFile != null && sourceFile!!.isDirectory){
+
+            icon.setImageDrawable(directoryDrawable)
             icon.scaleType = ImageView.ScaleType.CENTER_INSIDE
+
         }else{
 
             val mime:String? = mimeType
@@ -46,35 +72,57 @@ abstract class AbsBaseHolder<K>(itemView: View,clickListener:View.OnClickListene
                 if (mime.startsWith("image/")){
 
                     icon.scaleType = ImageView.ScaleType.CENTER_CROP
-                    Glide.with(itemView.context).load(sourceFile).into(icon)
+                    Glide.with(itemView.context.applicationContext).load(if (absPath == "N/A") uri else sourceFile).into(icon)
+
                 }else if (mime.startsWith("video/")){
                     icon.scaleType = ImageView.ScaleType.CENTER_CROP
-                    Glide.with(itemView.context).load(sourceFile.absolutePath).into(icon)
-
+                    Glide.with(itemView.context.applicationContext).load(if (absPath == "N/A") uri else sourceFile).into(icon)
 
                 }else if (mime.startsWith("audio/")){
 
-                    val mmr = MediaMetadataRetriever()
-                    synchronized(mmr){
-                        mmr.setDataSource(sourceFile.absolutePath)
-                    }
-                    val byteArray = mmr.embeddedPicture
-                    mmr.close()
-                    if (byteArray!=null){
-                        icon.scaleType = ImageView.ScaleType.CENTER_CROP
-                        Glide.with(itemView.context).load(byteArray).into(icon)
-                    }else{
-                        icon.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                        icon.setImageDrawable(ContextCompat.getDrawable(itemView.context,R.drawable.ic_baseline_music_note_24))
-                    }
+                    Thread{
 
-                }else if (mime.contains("vnd")){
+                        val mmr = MediaMetadataRetriever()
+                        var byteArray:ByteArray? = null
+                        synchronized(mmr){
+                            try {
+                                mmr.setDataSource(sourceFile!!.absolutePath)
+                                byteArray = mmr.embeddedPicture
+                            }catch (e:Exception){
+
+                                mmr.close()
+                            }
+                        }
+
+                        if (byteArray!=null && byteArray!!.isNotEmpty()){
+                            itemView.post {
+                                if (position == adapterPosition){
+                                    icon.scaleType = ImageView.ScaleType.CENTER_CROP
+                                    Glide.with(itemView.context.applicationContext).load(byteArray).into(icon)
+
+                                }
+                            }
+                        }else{
+                            itemView.post {
+                               if (position == adapterPosition){
+                                   icon.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                                   icon.setImageDrawable(audioNoteDrawable)
+
+                               }
+                            }
+                        }
+                    }.start()
+
+                    icon.post {
+                        icon.tag = "audio"
+                    }
+                }else if (mime.contains("vnd") || mime.endsWith(".apk",false)){
 
                     Thread{
 
-                        val pi = itemView.context.applicationContext.packageManager.getPackageArchiveInfo(sourceFile.absolutePath,0)
-                        pi?.applicationInfo?.sourceDir = sourceFile.absolutePath
-                        pi?.applicationInfo?.publicSourceDir = sourceFile.absolutePath
+                        val pi = itemView.context.applicationContext.packageManager.getPackageArchiveInfo(sourceFile!!.absolutePath,0)
+                        pi?.applicationInfo?.sourceDir = sourceFile!!.absolutePath
+                        pi?.applicationInfo?.publicSourceDir = sourceFile!!.absolutePath
 
                         val logo = pi?.applicationInfo?.loadIcon(itemView.context.applicationContext.packageManager)
 
@@ -83,24 +131,38 @@ abstract class AbsBaseHolder<K>(itemView: View,clickListener:View.OnClickListene
 
                               icon.setImageDrawable(logo)
                               icon.scaleType = ImageView.ScaleType.FIT_XY
-
-                              icon.layoutParams.width = icon.context.resources.getDimension(R.dimen.standard_icon_medium).toInt()
-                              icon.layoutParams.height  = icon.context.resources.getDimension(R.dimen.standard_icon_medium).toInt()
-
-                              icon.requestLayout()
                           }
                         }
                     }.start()
 
                 }else{
 
-                    icon.setImageDrawable(null)
-                    icon.scaleType = ImageView.ScaleType.FIT_XY
+                   itemView.post {
+
+                       itemView.findViewById<FrameLayout>(R.id.layout_file_item_icon_container)?.apply {
+                           setBackgroundResource(R.drawable.file_item_icon_bg)
+                       }
+
+                       val splitArgs = name.split(".",)
+
+                       icon.setImageBitmap(getTextedBitmap(splitArgs.get(splitArgs.size-1)))
+                       icon.scaleType = ImageView.ScaleType.FIT_XY
+
+                   }
                 }
             }else{
-                icon.setImageDrawable(null)
-                icon.scaleType = ImageView.ScaleType.FIT_XY
 
+                itemView.post {
+                    itemView.findViewById<FrameLayout>(R.id.layout_file_item_icon_container)?.apply {
+                        setBackgroundResource(R.drawable.file_item_icon_bg)
+                    }
+
+                    val splitArgs = name.split(".",)
+
+                    icon.setImageBitmap(getTextedBitmap(splitArgs.get(splitArgs.size-1)))
+                    icon.scaleType = ImageView.ScaleType.FIT_XY
+
+                }
             }
 
         }
@@ -114,4 +176,7 @@ abstract class AbsBaseHolder<K>(itemView: View,clickListener:View.OnClickListene
 
         return Bitmap.createScaledBitmap(bmp,scaledWidth,scaledHeight,true)
     }
+
+    protected abstract fun getTextedBitmap(text:String):Bitmap
+
 }

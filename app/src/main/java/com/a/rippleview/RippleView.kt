@@ -168,7 +168,7 @@ class RippleView : View {
         centerX = width/2
         centerY = height/2
 
-        maxRadius = (if (width < height) width else height)/2
+        maxRadius = (if (height > width) height else width)/2
     }
 
     override fun onDraw(canvas: Canvas) {

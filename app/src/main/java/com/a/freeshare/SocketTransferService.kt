@@ -1,5 +1,6 @@
 package com.a.freeshare
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,6 +10,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.a.freeshare.impl.SocketListener
@@ -33,6 +35,8 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
 
     var isSessionRunning:Boolean = false
 
+    private lateinit var powerLock:PowerManager.WakeLock
+
     companion object{
         const val NOTIFICATION_CHANNEL_ID = "SocketTransferService"
         const val NOTIFICATION_CHANNEL_NAME = "SocketTransferServiceChannel"
@@ -40,6 +44,8 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
         const val EXTRA_HOST = "SocketTransferService_extra_host"
 
         const val FOREGROUND_ID = 1001
+
+        const val LOCK_TAG = "SocketTransferService::class.simpleName"
     }
 
     inner class InnerBinder:Binder(){
@@ -47,8 +53,12 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
         fun getService():SocketTransferService = this@SocketTransferService
     }
 
+    @SuppressLint("ForegroundServiceType")
     override fun onCreate() {
         super.onCreate()
+
+        powerLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOCK_TAG)
+        powerLock.acquire()
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -63,6 +73,7 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
             .setContentTitle("${getString(R.string.app_name)} ${getString(R.string.is_running)}")
             .setContentText(getString(R.string.do_not_close_app))
             .setOngoing(true)
+
         notification = builder.build()
 
         startForeground(FOREGROUND_ID,notification)
@@ -102,22 +113,24 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-
-        stopServiceAndHaltOperation()
+        closeSession()
+        stopService()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        stopServiceAndHaltOperation()
+        /*killed by system
+        *stopService()
+        */
     }
 
-    fun stopSessionAndService(){
-       stopServiceAndHaltOperation()
+    fun closeSession(){
+       session.close()
     }
 
-    private fun stopServiceAndHaltOperation(){
-        session.close()
+    private fun stopService(){
+        powerLock.release()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
         }else{
@@ -134,7 +147,12 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
         socketListener?.onSocket()
     }
 
-    fun addToCancelIndex(at:Int) { session.addToCancelIndex(at) }
+    override fun onSocketClosed() {
+        socketListener?.onSocketClosed()
+        stopService()
+    }
+
+    fun addToCancelIndex(cancelByFileName:String) { session.addToCancelIndex(cancelByFileName) }
 
     fun send(fileItems:List<FileItem>){
         session.send(fileItems)
@@ -149,15 +167,15 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
     }
 
     @Synchronized
-    override fun onSendFiles(startPosition: Int, count: Int, files: List<FileItem>) {
-        transferImpl?.onSendFiles(startPosition, count, files)
+    override fun onSendFiles(adapterPosition: Int, count: Int, files: List<FileItem>) {
+        transferImpl?.onSendFiles(adapterPosition, count, files)
     }
 
     @Synchronized
     override fun onStartSend(
         index: Int,
         name: String,
-        absPath: String,
+        absPath: String?,
         mime: String?,
         length: Long
     ) {
@@ -178,15 +196,15 @@ class SocketTransferService : Service(),SocketListener,TransferImpl,Session.Sess
     }
 
     @Synchronized
-    override fun onReceiveFiles(startPosition: Int, count: Int) {
-        transferImpl?.onReceiveFiles(startPosition, count)
+    override fun onReceiveFiles(adapterPosition: Int, count: Int, queuedNames: Array<String?>) {
+        transferImpl?.onReceiveFiles(adapterPosition, count,queuedNames)
     }
 
     @Synchronized
     override fun onStartReceive(
         index: Int,
         name: String,
-        absPath: String,
+        absPath: String?,
         mime: String?,
         length: Long
     ) {
