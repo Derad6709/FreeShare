@@ -42,6 +42,7 @@ import java.lang.Exception
 import java.net.Inet4Address
 import java.net.NetworkInterface
 
+@SuppressLint("MissingPermission")
 class HostDeviceFragment: BaseFragment(),ConnectionImpl {
 
 
