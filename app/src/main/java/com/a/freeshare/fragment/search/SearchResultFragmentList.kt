@@ -23,6 +23,7 @@ import com.a.freeshare.obj.FileItem
 import com.a.freeshare.source.LocalMediaSourceViewModel
 import java.io.File
 
+
 class SearchResultFragmentList : MediaListCommonFragment() {
 
     open class HashTagStore(private val tag:String,private val hash:HashMap<Long,Int>){
@@ -83,8 +84,8 @@ class SearchResultFragmentList : MediaListCommonFragment() {
                 }
 
                 requireActivity().supportFragmentManager.findFragmentByTag(tag).also{it->
-                    if(it != null && it is MediaCommonListFragment){
-                        (it as MediaCommonListFragment).dAdapter.toggleSelection(clickedItem)
+                    if(it != null && it is MediaListCommonFragment){
+                        (it as MediaListCommonFragment).dAdapter.toggleSelection(clickedItem)
                     }
                 }
             }
