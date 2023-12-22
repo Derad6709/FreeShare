@@ -266,11 +266,11 @@ class SelectActivity: AppCompatActivity() {
 
         isLatestFragmentGrid = if (latestFragment is CommonSelectionImpl<*>)(latestFragment as CommonSelectionImpl<*>).isGridLayout() else false
 
-        if (latestFragment is BaseFragment)
-        (menu?.findItem(R.id.sort_by))?.subMenu?.findItem(latestFragment.getSortTypeId()!!)?.isChecked = true
-
-        menu?.findItem(R.id.layout_type)?.isChecked = isLatestFragmentGrid
-
+        if (latestFragment is BaseFragment){
+            (menu?.findItem(R.id.sort_by))?.subMenu?.findItem(latestFragment.getSortTypeId()!!)?.isChecked = true
+            menu?.findItem(R.id.layout_type)?.isChecked = isLatestFragmentGrid
+        }
+        
         return super.onPrepareOptionsMenu(menu)
     }
 
