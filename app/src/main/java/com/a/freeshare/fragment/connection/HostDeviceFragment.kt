@@ -1,5 +1,6 @@
 package com.a.freeshare.fragment.connection
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
