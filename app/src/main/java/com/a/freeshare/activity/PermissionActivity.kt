@@ -261,12 +261,13 @@ class PermissionActivity : AppCompatActivity() {
 
             permissionsHasStorage = PermissionWrapper.hasStorageAccess(this)
             permissionsHasLocation = PermissionWrapper.hasLocationAccess(this)
-        permissionHasCamera = PermissionWrapper.hasCameraAccess(this)
+            permissionHasCamera = PermissionWrapper.hasCameraAccess(this)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
                 permissionHasNearbyDevices = PermissionWrapper.hasNearbyDevicesAccess(this)
                 permissionHasPostNotification = PermissionWrapper.hasPostNotificationAccess(this)
             }
+            
             setStates()
             handlePermissionsOKResult()
 
