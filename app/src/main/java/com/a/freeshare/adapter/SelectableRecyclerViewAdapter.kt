@@ -154,8 +154,9 @@ abstract class SelectableRecyclerViewAdapter<ITEM,VH : RecyclerView.ViewHolder>(
     fun selectInverse(){
 
         for (o in items){
-            if (isSelectable(items.indexOf(o)))
+            if (isSelectable(items.indexOf(o))){
             toggleSelection(o)
+          }
         }
 
     }
