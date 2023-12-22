@@ -66,14 +66,15 @@ class SelectActivity: AppCompatActivity() {
 
                 if (supportFragmentManager.findFragmentByTag(SearchFragment.TAG) != null && supportFragmentManager.findFragmentByTag(SearchFragment.TAG)!!.isVisible){
 
-                    var sel:HashMap<Long,Int>? = null
+                    /*var sel:HashMap<Long,Int>? = null
                     supportFragmentManager.findFragmentByTag(SearchResultFragmentList.TAG)?.also {
                         if (it is SearchResultFragmentList){
                             sel = it.dAdapter.getSelection()
                         }
                     }
 
-                    if (sel != null)latestFragment.dAdapter.setSelection(sel!!)
+                    if (sel != null)latestFragment.dAdapter.setSelection(sel!!)*/
+                    
                     setSelectionStates()
 
                     ValueAnimator.ofFloat(0f,1f).apply {
