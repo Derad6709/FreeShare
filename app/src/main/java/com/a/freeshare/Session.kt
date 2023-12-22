@@ -517,11 +517,15 @@ class Session {
 
     private fun createOutDirPerMimeType(@NonNull mime:String):String{
 
-        val externalStorageDirPath  = Environment.getExternalStorageDirectory().absolutePath
-        val stringBuilder = StringBuilder().append(externalStorageDirPath).append(File.separator).append(context.getString(R.string.app_name)).append(File.separator)
+            val externalStorageDirPath  = Environment.getExternalStorageDirectory().absolutePath
+            
+            val stringBuilder = StringBuilder()
+            stringBuilder.append(externalStorageDirPath)
+            stringBuilder.append(File.separator)
+            stringBuilder.append(context.getString(R.string.app_name))
+            stringBuilder.append(File.separator)
 
-
-                if(mime.startsWith("image/")){
+        if(mime.startsWith("image/")){
                    stringBuilder.append("image")
                 }else if(mime.startsWith("video/")){
                     stringBuilder.append("video")
@@ -531,7 +535,7 @@ class Session {
                     stringBuilder.append("app")
                 }else{
                     stringBuilder.append("other")
-                }
+        }
             
 
         return stringBuilder.toString()
