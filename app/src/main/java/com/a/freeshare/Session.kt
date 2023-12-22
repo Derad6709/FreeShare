@@ -520,28 +520,19 @@ class Session {
         val externalStorageDirPath  = Environment.getExternalStorageDirectory().absolutePath
         val stringBuilder = StringBuilder().append(externalStorageDirPath).append(File.separator).append(context.getString(R.string.app_name)).append(File.separator)
 
-            when{
 
-                mime.startsWith("image/")->{
+                if(mime.startsWith("image/")){
                    stringBuilder.append("image")
-                }
-
-                mime.startsWith("video/")->{
+                }else if(mime.startsWith("video/")){
                     stringBuilder.append("video")
-                }
-
-                mime.startsWith("audio/")->{
+                }else if(mime.startsWith("audio/")){
                     stringBuilder.append("audio")
-                }
-
-                mime.equals("application/vnd.android.package-archive")->{
+                }else if(mime.equals("application/vnd.android.package-archive")){
                     stringBuilder.append("app")
-                }
-
-                else->{
+                }else{
                     stringBuilder.append("other")
                 }
-            }
+            
 
         return stringBuilder.toString()
 
