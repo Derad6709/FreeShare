@@ -76,6 +76,17 @@ class SearchResultFragmentList : MediaListCommonFragment() {
 
                 dAdapter.toggleSelection(clickedItem)
 
+                var tag = TAG;
+
+                for(rs in getRanges()){
+                    if(rs.isPresent(itemPosition))tag = rs.tag
+                }
+
+                requireActivity().supportFragmentManager.findFragmentByTag(tag).also{it->
+                    if(it != null && it is MediaCommonListFragment){
+                        (it as MediaCommonListFragment).dAdapter.toggleSelection(clickedItem)
+                    }
+                }
             }
         }
     }
