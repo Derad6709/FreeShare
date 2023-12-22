@@ -8,8 +8,9 @@ import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import com.a.freeshare.impl.ConnectionImpl
 import com.a.freeshare.obj.FileItem
+import android.annotation.SuppressList
 
-
+@SuppressLint("MissingPermission")
 class WifiP2pBroadcastReceiver() : BroadcastReceiver() {
 
 
