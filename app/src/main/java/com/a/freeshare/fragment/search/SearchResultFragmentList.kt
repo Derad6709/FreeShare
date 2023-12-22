@@ -28,7 +28,7 @@ class SearchResultFragmentList : MediaListCommonFragment() {
 
     open class HashTagStore(private val tag:String,private val hash:HashMap<Long,Int>){
 
-        class RangeStore(private val tag:String,private val start:Int,private val end:Int){
+        class RangeStore(val tag:String,private val start:Int,private val end:Int){
 
             fun isPresent(index:Int):Boolean = index in start .. end
         }
