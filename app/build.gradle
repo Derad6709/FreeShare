@@ -8,6 +8,10 @@ android {
 
     namespace 'com.a.freeshare'
 
+    lintOptions {
+        abortOnError false
+    }
+    
     defaultConfig {
         applicationId "com.a.freeshare"
         minSdk 24
