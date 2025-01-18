@@ -84,13 +84,14 @@ jobs:
             -keystore debug.keystore \
             -storepass android \
             -keypass android \
-            ${{ env.main_project_module }}/build/outputs/apk/release/app-release.apk \
+            ${{ env.main_project_module }}/build/outputs/apk/release/app-release-unsigned.apk \
             android-key
 
       # Create Signed Bundle AAB Release
       - name: Build and sign app bundle release (AAB) - ${{ env.main_project_module }} module
         run: |
           ./gradlew ${{ env.main_project_module }}:bundleRelease
+          tree app/build/outputs
           jarsigner \
             -verbose \
             -keystore debug.keystore \
