@@ -78,7 +78,7 @@ jobs:
       - name: Build and sign APK release project - ${{ env.main_project_module }} module
         run: |
           ./gradlew assembleRelease
-          zipalign -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release.apk
+          zipalign -v -p 4 ${{ env.main_project_module }}/build/outputs/apk/release/app-release-unsigned.apk ${{ env.main_project_module }}/build/outputs/apk/release/app-release.apk
           jarsigner \
             -verbose \
             -keystore debug.keystore \
