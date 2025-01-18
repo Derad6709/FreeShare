@@ -1,7 +1,6 @@
-name: Generated APK AAB (Upload - Create Artifact To Github Action)
+name: Generated Signed APK AAB (Upload - Create Artifact To GitHub Action)
 
 env:
-  # The name of the main module repository
   main_project_module: app
 
 on:
@@ -12,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  
+
 jobs:
   build:
 
@@ -32,12 +31,27 @@ jobs:
       - name: Set Up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu' # See 'Supported distributions' for available options
+          distribution: 'zulu' 
           java-version: '17'
           cache: 'gradle'
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
+
+      # Generate Signing Keystore
+      - name: Generate signing keystore
+        run: |
+          keytool -genkeypair \
+            -alias android-key \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -keystore debug.keystore \
+            -storepass android \
+            -keypass android \
+            -dname "CN=Android Debug,O=Android,C=US"
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
 
       # Run Tests Build
       - name: Run gradle tests
@@ -47,37 +61,59 @@ jobs:
       - name: Build gradle project
         run: ./gradlew build
 
-      # Create APK Debug
-      - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assembleDebug
+      # Create Signed APK Debug
+      - name: Build and sign APK debug project - ${{ env.main_project_module }} module
+        run: |
+          ./gradlew assembleDebug
+          jarsigner \
+            -verbose \
+            -keystore debug.keystore \
+            -storepass android \
+            -keypass android \
+            ${{ env.main_project_module }}/build/outputs/apk/debug/app-debug.apk \
+            android-key
 
-      # Create APK Release
-      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assemble
+      # Create Signed APK Release
+      - name: Build and sign APK release project - ${{ env.main_project_module }} module
+        run: |
+          ./gradlew assembleRelease
+          jarsigner \
+            -verbose \
+            -keystore debug.keystore \
+            -storepass android \
+            -keypass android \
+            ${{ env.main_project_module }}/build/outputs/apk/release/app-release.apk \
+            android-key
 
-      # Create Bundle AAB Release
-      # Noted for main module build [main_project_module]:bundleRelease
-      - name: Build app bundle release (AAB) - ${{ env.main_project_module }} module
-        run: ./gradlew ${{ env.main_project_module }}:bundleRelease
+      # Create Signed Bundle AAB Release
+      - name: Build and sign app bundle release (AAB) - ${{ env.main_project_module }} module
+        run: |
+          ./gradlew ${{ env.main_project_module }}:bundleRelease
+          jarsigner \
+            -verbose \
+            -keystore debug.keystore \
+            -storepass android \
+            -keypass android \
+            ${{ env.main_project_module }}/build/outputs/bundle/release/app-release.aab \
+            android-key
 
-      # Upload Artifact Buil
-      # Noted For Output [main_project_module]/build/outputs/apk/debug/
+      # Upload Signed APK Debug
       - name: Upload APK Debug - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) debug generated
+          name: ${{ env.date_today }} - ${{ env.repository_name }} - Signed APK(s) debug
           path: ${{ env.main_project_module }}/build/outputs/apk/debug/
 
-      # Noted For Output [main_project_module]/build/outputs/apk/release/
+      # Upload Signed APK Release
       - name: Upload APK Release - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) release generated
+          name: ${{ env.date_today }} - ${{ env.repository_name }} - Signed APK(s) release
           path: ${{ env.main_project_module }}/build/outputs/apk/release/
 
-      # Noted For Output [main_project_module]/build/outputs/bundle/release/
-      - name: Upload AAB (App Bundle) Release - ${{ env.repository_name }}
+      # Upload Signed AAB Release
+      - name: Upload AAB Release - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} - ${{ env.repository_name }} - App bundle(s) AAB release generated
+          name: ${{ env.date_today }} - ${{ env.repository_name }} - Signed App Bundle(s) release
           path: ${{ env.main_project_module }}/build/outputs/bundle/release/
