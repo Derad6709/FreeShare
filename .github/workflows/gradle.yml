@@ -50,6 +50,8 @@ jobs:
             -storepass android \
             -keypass android \
             -dname "CN=Android Debug,O=Android,C=US"
+          cat debug.keystore | base64 -d > $ANDROID_KEYSTORE
+          
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
@@ -65,27 +67,31 @@ jobs:
       - name: Build and sign APK debug project - ${{ env.main_project_module }} module
         run: |
           ./gradlew assembleDebug
-          tree app/build/outputs
-          jarsigner \
-            -verbose \
-            -keystore debug.keystore \
-            -storepass android \
-            -keypass android \
-            ${{ env.main_project_module }}/build/outputs/apk/debug/app-debug.apk \
-            android-key
 
-      # Create Signed APK Release
       - name: Build and sign APK release project - ${{ env.main_project_module }} module
         run: |
           ./gradlew assembleRelease
-          zipalign -v -p 4 ${{ env.main_project_module }}/build/outputs/apk/release/app-release-unsigned.apk ${{ env.main_project_module }}/build/outputs/apk/release/app-release.apk
-          jarsigner \
-            -verbose \
-            -keystore debug.keystore \
-            -storepass android \
-            -keypass android \
-            ${{ env.main_project_module }}/build/outputs/apk/release/app-release.apk \
-            android-key
+
+      - name: ZipAlign & Sign DEBUG APK
+        uses: tiann/zipalign-sign-android-release@v1.1.4
+        with:
+          releaseDirectory: ${{ env.main_project_module }}/build/outputs/apk/debug
+          signingKeyBase64: ${{ env.ANDROID_KEYSTORE }} 
+          alias: android-key
+          keyStorePassword: android
+          keyPassword: android
+          zipAlign: true
+
+      - name: ZipAlign & Sign RELEASE APK
+        uses: tiann/zipalign-sign-android-release@v1.1.4
+        with:
+          releaseDirectory: ${{ env.main_project_module }}/build/outputs/apk/release
+          signingKeyBase64: ${{ env.ANDROID_KEYSTORE }} 
+          alias: android-key
+          keyStorePassword: android
+          keyPassword: android
+          zipAlign: true
+
 
       # Create Signed Bundle AAB Release
       - name: Build and sign app bundle release (AAB) - ${{ env.main_project_module }} module
