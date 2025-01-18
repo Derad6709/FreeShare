@@ -65,6 +65,7 @@ jobs:
       - name: Build and sign APK debug project - ${{ env.main_project_module }} module
         run: |
           ./gradlew assembleDebug
+          tree app/build/outputs
           jarsigner \
             -verbose \
             -keystore debug.keystore \
@@ -77,6 +78,7 @@ jobs:
       - name: Build and sign APK release project - ${{ env.main_project_module }} module
         run: |
           ./gradlew assembleRelease
+          tree app/build/outputs
           jarsigner \
             -verbose \
             -keystore debug.keystore \
